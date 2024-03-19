@@ -1,4 +1,4 @@
-function sha_256(string) {
+async function sha_256(string) {
     const utf8 = new TextEncoder().encode(string);
     return crypto.subtle.digest('SHA-256', utf8).then((hashBuffer) => {
         const hashArray = Array.from(new Uint8Array(hashBuffer));
@@ -9,13 +9,11 @@ function sha_256(string) {
     });
 }
 
-function hash_user() {
-    const uname = document.getElementById("uname").value;
-    const pwd = document.getElementById("pwd").value;
+async function hash_user(user_id, pwd_id) {
+    const uname = document.getElementById(user_id).value;
+    const pwd = document.getElementById(pwd_id).value;
 
-    const hash = sha_256(uname + pwd);
-
-    console.log(`${uname}, ${pwd}, ${hash}`);
+    return await sha_256(uname + pwd);
 }
 
 async function get_user(hash) {
@@ -38,9 +36,11 @@ async function get_user(hash) {
     console.log(res_data);
 }
 
-function setup() {
+async function setup() {
     const submit_button = document.getElementById("submit");
-    submit_button.addEventListener("click", hash_user);
+    submit_button.addEventListener("click", async () => {
+        await get_user(await hash_user("uname", "pwd"));
+    });
 }
 
 setup();
