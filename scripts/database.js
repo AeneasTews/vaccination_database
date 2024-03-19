@@ -53,4 +53,16 @@ async function search_user(database, hash) {
     });
 }
 
+async function ceate_user(database, hash) {
+    return new Promise((resolve, reject) => {
+        database.run(`insert into impf_daten(hash) values(${hash})`, (err, row) => {
+            if (err) {
+                reject(err);
+            }
+
+            resolve(row);
+        });
+    });
+}
+
 module.exports = { search, search_user, close, connect, file_location };

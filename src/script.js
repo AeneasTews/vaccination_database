@@ -37,9 +37,9 @@ async function get_user(hash) {
 }
 
 async function setup() {
-    const submit_button = document.getElementById("submit");
-    submit_button.addEventListener("click", async () => {
-        await get_user(await hash_user("uname", "pwd"));
+    const submit_get_button = document.getElementById("submit_get");
+    submit_get_button.addEventListener("click", async () => {
+        await get_user(await hash_user("uname_get", "pwd_get"));
     });
 }
 

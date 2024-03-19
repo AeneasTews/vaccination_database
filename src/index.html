@@ -7,18 +7,32 @@
 <body>
     <h1>Impf Datenbank</h1>
     <div id="request_field">
-        <label for="uname"><b>PK</b></label>
-        <input type="text" placeholder="PK Eingeben" id="uname">
+        <h2>Daten abfragen</h2>
+        <label for="uname_get"><b>PK</b></label>
+        <input type="text" placeholder="PK ingeben" id="uname_get">
 
-        <label for="pwd"><b>Passwort</b></label>
-        <input type="password" placeholder="Passwort Eingeben" id="pwd">
+        <label for="pwd_get"><b>Passwort</b></label>
+        <input type="password" placeholder="Passwort eingeben" id="pwd_get">
 
-        <button id="submit">Submit</button>
+        <button id="submit_get">Abfragen</button>
+        <div id="results">
+            <ul id="results_list"></ul>
+        </div>
     </div>
-    <div id="results">
-        <ul id="results_list"></ul>
+    <hr/>
+    <div>
+        <h2>Nutzer anlegen</h2>
+        <label for="uname_create"><b>PK</b></label>
+        <input type="text" placeholder="PK eingeben" id="uname_create">
+
+        <label for="pwd_create"><b>Passwort</b></label>
+        <input type="password" placeholder="Passwort eingeben" id="pwd_create">
+
+        <label for="pwd_admin"><b>Arzt Passwort</b></label>
+        <input type="password" placeholder="Arzt Passwort" id="pwd_admin">
+
+        <button id="submit_create">Erstellen</button>
     </div>
-    <h2 id="test"></h2>
     <script src="script.js"></script>
 </body>
 </html>
