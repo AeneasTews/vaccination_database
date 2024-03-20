@@ -21,15 +21,15 @@ async function get_user(hash) {
     const req = new Request(url);
 
     const req_data = JSON.stringify({
-        "hash": `${hash}`
+        "hash": `${hash}`,
     });
 
     const res = await fetch(req, {
         method: "POST",
-        body: req_data,
         headers: {
             "Content-Type": "application/json",
         },
+        body: req_data,
     });
 
     const res_data = await res.json();
