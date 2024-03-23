@@ -3,35 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <title>Impf Datenbank</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
     <h1>Impf Datenbank</h1>
     <div id="request_field">
         <h2>Daten abfragen</h2>
-        <label for="uname_get"><b>PK</b></label>
-        <input type="text" placeholder="PK ingeben" id="uname_get">
-
-        <label for="pwd_get"><b>Passwort</b></label>
-        <input type="password" placeholder="Passwort eingeben" id="pwd_get">
-
-        <button id="submit_get">Abfragen</button>
-        <div id="results">
-            <ul id="results_list"></ul>
+        <div class="Entry">
+            <!--<label for="uname_get"><b>PK</b></label>-->
+            <input type="text" placeholder="PK eingeben" id="uname_get">
+        </div>
+        <div class="Entry">
+            <!--<label for="pwd_get"><b>Passwort</b></label>-->
+            <input type="password" placeholder="Passwort eingeben" id="pwd_get">
+        </div>
+        <div class="Entry">
+            <button id="submit_get">Abfragen</button>
+        </div>
+        <div>
+            <table id="impf_table">
+            </table>
         </div>
     </div>
     <hr/>
     <div>
         <h2>Nutzer anlegen</h2>
-        <label for="uname_create"><b>PK</b></label>
-        <input type="text" placeholder="PK eingeben" id="uname_create">
-
-        <label for="pwd_create"><b>Passwort</b></label>
-        <input type="password" placeholder="Passwort eingeben" id="pwd_create">
-
-        <label for="pwd_admin"><b>Arzt Passwort</b></label>
-        <input type="password" placeholder="Arzt Passwort" id="pwd_admin">
-
-        <button id="submit_create">Erstellen</button>
+        <div class="Entry">
+            <!--<label for="uname_create"><b>PK</b></label>-->
+            <input type="text" placeholder="PK eingeben" id="uname_create">
+        </div>
+        <div class="Entry">
+            <!--<label for="pwd_create"><b>Passwort</b></label>-->
+            <input type="password" placeholder="Passwort eingeben" id="pwd_create">
+        </div>
+        <div class="Entry">
+            <!--<label for="pwd_admin"><b>Arzt Passwort</b></label>-->
+            <input type="password" placeholder="Arzt Passwort" id="pwd_admin">
+        </div>
+        <div class="Entry">
+            <button id="submit_create">Erstellen</button>
+        </div>
     </div>
     <script src="script.js"></script>
 </body>

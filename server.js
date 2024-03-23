@@ -26,6 +26,11 @@ app.get("/favicon.ico", (req, res) => {
     res.sendFile(favicon_path, {root: __dirname});
 });
 
+app.get("/style.css", (req, res) => {
+    res.setHeader("Content-Type", "text/css");
+    res.sendFile("./src/style.css", {root: __dirname});
+});
+
 // endpoints
 app.get("/rows", async (req, res) => {
     res.json(await search(impf_db, "select hash, fsme from impf_daten"));
