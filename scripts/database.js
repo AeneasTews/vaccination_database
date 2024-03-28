@@ -88,7 +88,8 @@ async function write_data(database, hash, column, value) {
                 reject(err);
             }
 
-            resolve(this);
+            console.log(`Updated ${column} to ${value} for ${hash} with rowid: ${this.lastID}`);
+            resolve("success");
         });
     });
 }
