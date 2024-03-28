@@ -64,7 +64,20 @@ app.post("/create_user", async (req, res) => {
 app.post("/write_data", async (req, res) => {
     const req_data = req.body;
 
-    console.log(req_data);
+    if (await get_permissions(admin_db, req_data.admin_hash)) {
+        const result = await write_data(impf_db, req_data.user_hash, req_data.vaccine, req_data.date);
+        if (result === "success") {
+            console.log(`${req.ip} changed: ${req_data.vaccine} to ${req_data.date} for ${req_data.user_hash}`);
+            res.json({
+                "status": "success",
+            });
+        }
+    } else {
+        console.log(`${req.ip} tried changing: ${req_data.vaccine} to ${req_data.date} for ${req_data.user_hash}; failed due to invalid admin_hash: ${req_data.admin_hash}`)
+        res.json({
+            "status": "invalid_admin_password",
+        });
+    }
 });
 
 app.get("/vaccines", async (req, res) => {

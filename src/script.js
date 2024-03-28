@@ -114,10 +114,11 @@ async function create_user() {
     const res = await send_creation_request(user_hash, admin_hash);
     const res_data = await res.json();
 
-    if (res_data.status === "invalid_admin_password") {
+    if (res_data.status === "success") {
+        await get_user(user_hash);
+    } else if (res_data.status === "invalid_admin_password") {
         alert("Ungueltiges Arzt Passwort");
     }
-    console.log(res_data);
 }
 
 function set_current_date() {
@@ -153,6 +154,46 @@ function create_vaccine_picker(json) {
 
 // TODO: create function to update vaccination values
 
+async function send_update_request(user_hash, admin_hash, vaccine_expiry_date, vaccine) {
+    const req = new Request(`${url}write_data`);
+
+    const req_data = JSON.stringify({
+        "user_hash": user_hash,
+        "admin_hash": admin_hash,
+        "date": vaccine_expiry_date,
+        "vaccine": vaccine,
+    });
+
+    return await fetch(req, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: req_data,
+    });
+}
+
+async function update_vaccine()  {
+    // get authorization info
+    const user_hash = await hash_data(["uname_write_data", "pwd_write_data"]);
+    const admin_hash = await hash_data(["pwd_write_admin"]);
+
+    // get vaccination info
+    const vaccine = document.getElementById("vaccine_picker").value;
+    const expiry_date = document.getElementById("vaccination_date").value;
+    const expiry_time = Date.parse(expiry_date);
+
+
+    const res = await send_update_request(user_hash, admin_hash, expiry_time, vaccine);
+    const res_data = await res.json();
+
+    if (res_data.status === "success") {
+        await get_user(user_hash);
+    } else if (res_data.status === "invalid_admin_password") {
+        alert("Ungueltiges Arzt Passwort");
+    }
+}
+
 async function setup() {
     set_current_date();
     create_vaccine_picker(await get_vaccines());
@@ -165,6 +206,11 @@ async function setup() {
     const create_button = document.getElementById("create_button");
     create_button.addEventListener("click", async () => {
         await create_user();
+    });
+
+    const change_button = document.getElementById("write_data_button");
+    change_button.addEventListener("click", async () => {
+        await update_vaccine();
     });
 }
 
