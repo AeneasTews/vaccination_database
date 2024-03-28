@@ -14,24 +14,26 @@ const admin_db = connect("./admin.db");
 
 const favicon_path = "./src/assets/Bundeswehr_Kreuz.svg.png";
 
-// website TODO: log all requests and additional information
+let vaccines;
+
+// website TODO: log to a file
 app.get("/", (req, res) => {
-    logger.info(req.ip, `${req.ip} requested /`);
+    logger.info({"ip": req.ip}, `${req.ip} requested /`);
     res.sendFile("./src/index.html", {root: __dirname});
 });
 
 app.get("/script.js", (req, res) => {
-    logger.info(req.ip, `${req.ip} requested /script.js`);
+    logger.info({"ip": req.ip}, `${req.ip} requested /script.js`);
     res.sendFile("./src/script.js", {root: __dirname});
 });
 
 app.get("/favicon.ico", (req, res) => {
-    logger.info(req.ip, `${req.ip} requested /favicon.ico`);
+    logger.info({"ip": req.ip}, `${req.ip} requested /favicon.ico`);
     res.sendFile(favicon_path, {root: __dirname});
 });
 
 app.get("/style.css", (req, res) => {
-    logger.info(req.ip, `${req.ip} requested /style.css`);
+    logger.info({"ip": req.ip}, `${req.ip} requested /style.css`);
     res.setHeader("Content-Type", "text/css");
     res.sendFile("./src/style.css", {root: __dirname});
 });
@@ -44,11 +46,11 @@ app.post("/user", async (req, res) => {
         res.json({
             "status": "invalid query",
         });
-        logger.error(req_data, `${req.ip} posted to /user and failed sql check`);
+        logger.error({"req_data": req_data}, `${req.ip} posted to /user and failed sql check`);
         return;
     }
 
-    logger.info(req_data, `${req.ip} posted to /user without any issues`);
+    logger.info({"req_data": req_data}, `${req.ip} posted to /user without any issues`);
     res.json(await search_user(impf_db, req_data.hash));
 });
 
@@ -59,7 +61,7 @@ app.post("/create_user", async (req, res) => {
         res.json({
             "status": "invalid query",
         });
-        logger.error(req_data, `${req.ip} posted to /create_user and failed sql check`);
+        logger.error({"req_data": req_data}, `${req.ip} posted to /create_user and failed sql check`);
         return;
     }
 
@@ -67,7 +69,7 @@ app.post("/create_user", async (req, res) => {
         res.json({
             "status": "invalid_admin_password",
         });
-        logger.error(req_data, `${req.ip} posted to /create_user and failed admin password check`);
+        logger.error({"req_data": req_data}, `${req.ip} posted to /create_user and failed admin password check`);
         return;
     }
 
@@ -75,11 +77,11 @@ app.post("/create_user", async (req, res) => {
         res.json({
             "status": "user_already_exists",
         });
-        logger.error(req_data, `${req.ip} posted to /create_user but user already exists`);
+        logger.error({"req_data": req_data}, `${req.ip} posted to /create_user but user already exists`);
         return;
     }
 
-    logger.info(req_data, `${req.ip} posted to /create_user`);
+    logger.info({"req_data": req_data}, `${req.ip} posted to /create_user`);
     const result = await create_user(impf_db, admin_db, req_data.user_hash, req_data.admin_hash);
     if (result === "success") {
         logger.info(`${req.ip} created user ${req_data.user_hash} using admin ${req_data.admin_hash}`);
@@ -96,7 +98,7 @@ app.post("/write_data", async (req, res) => {
         res.json({
             "status": "invalid query",
         });
-        logger.error(req_data, `${req.ip} posted to /write_data and failed sql check`);
+        logger.error({"req_data": req_data}, `${req.ip} posted to /write_data and failed sql check`);
         return;
     }
 
@@ -105,11 +107,11 @@ app.post("/write_data", async (req, res) => {
         res.json({
             "status": "invalid_admin_password",
         });
-        logger.error(req_data, `${req.ip} posted to /write_data and failed admin password check`);
+        logger.error({"req_data": req_data}, `${req.ip} posted to /write_data and failed admin password check`);
         return;
     }
 
-    logger.info({req_data}, `${req.ip} posted to /write_data`);
+    logger.info({"req_data": req_data}, `${req.ip} posted to /write_data`);
     const result = await write_data(impf_db, req_data.user_hash, req_data.vaccine, req_data.date);
     if (result === "success") {
         logger.info(`${req.ip} changed: ${req_data.vaccine} to ${req_data.date} for ${req_data.user_hash}`);
@@ -119,15 +121,9 @@ app.post("/write_data", async (req, res) => {
     }
 });
 
-// TODO: create a json at beginning of runtime in order to reduce load on server
 app.get("/vaccines", async (req, res) => {
     logger.info(`${req.ip} requested /vaccines`);
-    const vaccines = await get_vaccines(impf_db);
-    const data = {
-        "vaccines": vaccines,
-    }
-
-    res.json(data);
+    res.json(vaccines);
 });
 
 // graceful shutdown
@@ -152,7 +148,12 @@ process.on('SIGINT', () => {
 });
 
 // start the server
-app.listen(port, () => {
+app.listen(port, async () => {
     logger.info(`Server started on port ${port}`);
     logger.info(`Favicon path: ${favicon_path}`);
+
+    const data = await get_vaccines(impf_db);
+    vaccines = {
+        "vaccines": data,
+    };
 });
