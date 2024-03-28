@@ -58,8 +58,6 @@ async function get_user(hash) {
         "hash": hash,
     });
 
-    console.log(`get user: ${req_data}`);
-
     const res = await fetch(req, {
         method: "POST",
         headers: {
@@ -87,8 +85,6 @@ async function send_creation_request(user_hash, admin_hash) {
         "admin_hash": admin_hash,
         "user_hash": user_hash,
     });
-
-    console.log(`create user: ${req_data}`);
 
     return await fetch(req, {
         method: "POST",
@@ -118,6 +114,8 @@ async function create_user() {
         await get_user(user_hash);
     } else if (res_data.status === "invalid_admin_password") {
         alert("Ungueltiges Arzt Passwort");
+    } else if (res_data.status === "user_already_exists") {
+        alert("Nutzer existiert bereits");
     }
 }
 
@@ -151,8 +149,6 @@ function create_vaccine_picker(json) {
         select.appendChild(option);
     });
 }
-
-// TODO: create function to update vaccination values
 
 async function send_update_request(user_hash, admin_hash, vaccine_expiry_date, vaccine) {
     const req = new Request(`${url}write_data`);

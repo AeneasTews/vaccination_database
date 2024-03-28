@@ -1,14 +1,13 @@
 const sqlite3 = require('sqlite3').verbose();
-
-// TODO: implement sql query filtering in order to prevent sql-injection
+const logger = require("./logger");
 
 function connect(file_location) {
     let db =  new sqlite3.Database(file_location, sqlite3.OPEN_READWRITE, (err) => {
         if (err) {
-            console.error(err);
+            logger.error(err);
         }
 
-        console.log(`Connecting to database ${file_location}`);
+        logger.info(`Connecting to database ${file_location}`);
     });
 
     db.serialize();
@@ -20,23 +19,10 @@ function connect(file_location) {
 function close(database) {
     database.close((err) => {
         if (err) {
-            console.error(err);
+            logger.error(err);
         }
 
-        console.log(`Closing the connection to database ${database}`);
-    });
-}
-
-// execute any query TODO: remove this for security reasons
-async function search(database, query) {
-    return new Promise((resolve, reject) => {
-        database.all(query, (err, rows) => {
-            if (err) {
-                reject(err);
-            }
-
-            resolve(rows);
-        });
+        logger.info(`Closing the connection to database ${database}`);
     });
 }
 
@@ -66,7 +52,7 @@ async function get_permissions(database, hash) {
     });
 }
 
-// create a new user without any data TODO: check if a user already exists, if so, then do not permit changes
+// create a new user without any data
 async function create_user(impf_database, admin_database, new_hash) {
     return new Promise((resolve, reject) => {
         impf_database.run(`insert into impf_daten(hash) values('${new_hash}')`, (err) => {
@@ -74,7 +60,7 @@ async function create_user(impf_database, admin_database, new_hash) {
                 reject(err);
             }
 
-            console.log(`Inserted ${new_hash} into ${impf_database} with rowid: ${this.lastID}`);
+            logger.info(`Inserted ${new_hash} into ${impf_database} with rowid: ${this.lastID}`);
             resolve("success");
         });
     });
@@ -88,12 +74,12 @@ async function write_data(database, hash, column, value) {
                 reject(err);
             }
 
-            console.log(`Updated ${column} to ${value} for ${hash} with rowid: ${this.lastID}`);
+            logger.info(`Updated ${column} to ${value} for ${hash} with rowid: ${this.lastID}`);
             resolve("success");
         });
     });
 }
-// TODO: generally move processing of data from server.js into database.js
+
 async function get_vaccines(database) {
     return new Promise((resolve, reject) => {
         database.all("pragma table_info(impf_daten)", (err, rows) => {
@@ -107,4 +93,8 @@ async function get_vaccines(database) {
     });
 }
 
-module.exports = { search, search_user, close, connect, create_user, get_permissions, write_data, get_vaccines};
+function filter_sql(string) {
+    return /^[a-z0-9]+$/.test(string);
+}
+
+module.exports = { filter_sql, search_user, close, connect, create_user, get_permissions, write_data, get_vaccines};
