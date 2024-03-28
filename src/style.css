@@ -17,3 +17,7 @@ table {
     position: relative;
     right: 0;
 }
+
+label {
+    display: block;
+}

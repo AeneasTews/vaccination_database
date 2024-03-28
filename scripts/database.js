@@ -67,14 +67,15 @@ async function get_permissions(database, hash) {
 }
 
 // create a new user without any data TODO: check if a user already exists, if so, then do not permit changes
-async function create_user(impf_database, admin_database, new_hash, admin_hash) {
+async function create_user(impf_database, admin_database, new_hash) {
     return new Promise((resolve, reject) => {
-        impf_database.run(`insert into impf_daten(hash) values('${new_hash}')`, (err, row) => {
+        impf_database.run(`insert into impf_daten(hash) values('${new_hash}')`, (err) => {
             if (err) {
                 reject(err);
             }
 
-            resolve(row);
+            console.log(`Inserted ${new_hash} into ${impf_database} with rowid: ${this.lastID}`);
+            resolve("success");
         });
     });
 }
@@ -82,14 +83,27 @@ async function create_user(impf_database, admin_database, new_hash, admin_hash) 
 // function which allows the addition of values to specific columns in table
 async function write_data(database, hash, column, value) {
     return new Promise((resolve, reject) => {
-        database.run(`update impf_daten set '${column}'='${value}' where hash='${hash}'`, (err, row) => {
+        database.run(`update impf_daten set '${column}'='${value}' where hash='${hash}'`, (err) => {
             if (err) {
                 reject(err);
             }
 
-            resolve(row);
+            resolve(this);
+        });
+    });
+}
+// TODO: generally move processing of data from server.js into database.js
+async function get_vaccines(database) {
+    return new Promise((resolve, reject) => {
+        database.all("pragma table_info(impf_daten)", (err, rows) => {
+            if (err) {
+                reject(err);
+            }
+
+            const columns = rows.map(row => row.name).filter(row_name => row_name !== "hash");
+            resolve(columns);
         });
     });
 }
 
-module.exports = { search, search_user, close, connect, create_user, get_permissions};
+module.exports = { search, search_user, close, connect, create_user, get_permissions, write_data, get_vaccines};

@@ -1,5 +1,5 @@
 const express = require("express");
-const { search, search_user, close, connect, create_user, get_permissions } = require("./scripts/database.js");
+const { search, search_user, close, connect, create_user, get_permissions, write_data, get_vaccines } = require("./scripts/database.js");
 
 // setup
 const app = express();
@@ -46,12 +46,34 @@ app.post("/create_user", async (req, res) => {
     const req_data = req.body;
 
     if (await get_permissions(admin_db, req_data.admin_hash)) {
-        console.log(`Creating user ${req_data.admin_hash} using admin ${req_data.admin_hash}`);
-        res.json(await create_user(impf_db, admin_db, req_data.user_hash, req_data.admin_hash));
+        const result = await create_user(impf_db, admin_db, req_data.user_hash, req_data.admin_hash);
+        if (result === "success") {
+            console.log(`${req.ip} created user ${req_data.user_hash} using admin ${req_data.admin_hash}`);
+            res.json({
+                "status": "success",
+            });
+        }
     } else {
-        res.status(403);
-        res.sendFile("./src/403.html", {root: __dirname});
+        console.log(`${req.ip} tried creating user: ${req_data.user_hash}; failed due to invalid admin_hash: ${req_data.admin_hash}`)
+        res.json({
+            "status": "invalid_admin_password",
+        });
     }
+});
+
+app.post("/write_data", async (req, res) => {
+    const req_data = req.body;
+
+    console.log(req_data);
+});
+
+app.get("/vaccines", async (req, res) => {
+    const vaccines = await get_vaccines(impf_db);
+    const data = {
+        "vaccines": vaccines,
+    }
+
+    res.json(data);
 });
 
 // graceful shutdown

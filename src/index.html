@@ -10,15 +10,16 @@
     <div id="request_field">
         <h2>Daten abfragen</h2>
         <div class="Entry">
-            <!--<label for="uname_get"><b>PK</b></label>-->
+            <label for="uname_get"><b>PK</b></label>
             <input type="text" placeholder="PK eingeben" id="uname_get">
         </div>
         <div class="Entry">
-            <!--<label for="pwd_get"><b>Passwort</b></label>-->
+            <label for="pwd_get"><b>Passwort</b></label>
             <input type="password" placeholder="Passwort eingeben" id="pwd_get">
         </div>
+        <br>
         <div class="Entry">
-            <button id="submit_get">Abfragen</button>
+            <button id="get_button">Abfragen</button>
         </div>
         <div>
             <table id="impf_table">
@@ -29,19 +30,53 @@
     <div>
         <h2>Nutzer anlegen</h2>
         <div class="Entry">
-            <!--<label for="uname_create"><b>PK</b></label>-->
+            <label for="uname_create"><b>PK</b></label>
             <input type="text" placeholder="PK eingeben" id="uname_create">
         </div>
         <div class="Entry">
-            <!--<label for="pwd_create"><b>Passwort</b></label>-->
+            <label for="pwd_create"><b>Passwort</b></label>
             <input type="password" placeholder="Passwort eingeben" id="pwd_create">
         </div>
         <div class="Entry">
-            <!--<label for="pwd_admin"><b>Arzt Passwort</b></label>-->
-            <input type="password" placeholder="Arzt Passwort" id="pwd_admin">
+            <label for="pwd_create_confirm"><b>Passwort bestaetigen</b></label>
+            <input type="password" placeholder="Passwort bestaetigen" id="pwd_create_confirm">
         </div>
         <div class="Entry">
-            <button id="submit_create">Erstellen</button>
+            <label for="pwd_admin"><b>Arzt Passwort</b></label>
+            <input type="password" placeholder="Arzt Passwort" id="pwd_admin">
+        </div>
+        <br>
+        <div class="Entry">
+            <button id="create_button">Erstellen</button>
+        </div>
+    </div>
+    <hr/>
+    <div>
+        <h2>Daten eintragen</h2>
+        <div class="Entry">
+            <label for="uname_write_data"><b>PK</b></label>
+            <input type="text" placeholder="PK eingeben" id="uname_write_data">
+        </div>
+        <div class="Entry">
+            <label for="pwd_write_data"><b>Passwort</b></label>
+            <input type="password" placeholder="Passwort eingeben" id="pwd_write_data">
+        </div>
+        <div class="Entry">
+            <label for="vaccine_picker"><b>Impfung auswaehlen</b></label>
+            <select id="vaccine_picker">
+            </select>
+        </div>
+        <div class="Entry">
+            <label for="vaccination_date"><b>Ablaufdatum</b></label>
+            <input type="date" value="2024-01-01" id="vaccination_date">
+        </div>
+        <div>
+            <label for="pwd_admin_additon"><b>Arzt Passwort</b></label>
+            <input type="password" id="pwd_admin_additon" placeholder="Arzt Passwort">
+        </div>
+        <br>
+        <div class="Entry">
+            <button id="write_data_button">Eintragen</button>
         </div>
     </div>
     <script src="script.js"></script>
